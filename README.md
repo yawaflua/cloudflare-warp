@@ -65,7 +65,7 @@ You can download pre-compiled binaries for various operating systems and archite
 
 Since the tool is written in Go, it should be rather trivial.
 
-1. Ensure that you have Go installed on your system. You can download it from [here](https://golang.org/dl/). At least Go 1.24.4 is required (as per `go.mod`).
+1. Ensure that you have Go installed on your system. You can download it from [here](https://go.dev/dl/). At least Go 1.26.6 is required (as per `go.mod`).
 
 2. Clone this repository and switch to the project's root directory:
 

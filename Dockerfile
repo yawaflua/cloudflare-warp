@@ -1,4 +1,5 @@
 ARG ALPINE_VERSION=latest
+ARG GO_VERSION=1.26.6
 
 FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION} AS alpine
 ENV TZ=Etc/UTC
@@ -8,7 +9,7 @@ RUN apk update \
   ca-certificates \
  && rm -rf /var/cache/apk/*
 
-FROM golang:alpine AS builder
+FROM golang:${GO_VERSION}-alpine AS builder
 
 WORKDIR /src
 COPY . /src
