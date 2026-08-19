@@ -323,7 +323,7 @@ func (p *Proxy) UpdateProxyConfigAndRestart(ctx context.Context, newConfig Proxy
 	p.engine = core.NewEngine(ctx, p.engineConfig)
 	p.started = false
 	p.Stop()
-	p.Run()
+	p.Start()
 	return p, nil
 }
 
