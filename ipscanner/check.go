@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/netip"
 
-	"github.com/shahradelahi/cloudflare-warp/ipscanner/model"
-	"github.com/shahradelahi/cloudflare-warp/ipscanner/ping"
+	"github.com/yawaflua/cloudflare-warp/ipscanner/model"
+	"github.com/yawaflua/cloudflare-warp/ipscanner/ping"
 )
 
 // CheckEndpoint performs a WireGuard handshake with one exact WARP endpoint.

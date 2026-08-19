@@ -14,11 +14,11 @@ import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
-	"github.com/shahradelahi/cloudflare-warp/core"
-	"github.com/shahradelahi/cloudflare-warp/core/cache"
-	"github.com/shahradelahi/cloudflare-warp/ipscanner/ipgenerator"
-	"github.com/shahradelahi/cloudflare-warp/log"
-	"github.com/shahradelahi/cloudflare-warp/utils"
+	"github.com/yawaflua/cloudflare-warp/core"
+	"github.com/yawaflua/cloudflare-warp/core/cache"
+	"github.com/yawaflua/cloudflare-warp/ipscanner/ipgenerator"
+	"github.com/yawaflua/cloudflare-warp/log"
+	"github.com/yawaflua/cloudflare-warp/utils"
 )
 
 var RunCmd = &cobra.Command{

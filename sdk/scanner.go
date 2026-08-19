@@ -6,8 +6,8 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/network"
-	"github.com/shahradelahi/cloudflare-warp/ipscanner"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/network"
+	"github.com/yawaflua/cloudflare-warp/ipscanner"
 )
 
 const (

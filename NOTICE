@@ -1,0 +1,13 @@
+cloudflare-warp
+
+Copyright (C) 2026 Dmitrii Shimanski (yawaflua)
+
+This program, including modifications made after commit
+475e16a41395dcdce88dd04f5f7d8a4885577fbe, is distributed under the
+GNU General Public License, version 3 only. See LICENSE.
+
+Portions of this program are derived from the original cloudflare-warp
+project by Shahrad Elahi and its contributors. Those portions remain
+available under the MIT License. See LICENSE-MIT.
+
+SPDX-License-Identifier: GPL-3.0-only

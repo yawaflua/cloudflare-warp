@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/shahradelahi/cloudflare-warp/cmd"
+	"github.com/yawaflua/cloudflare-warp/cmd"
 )
 
 func main() {

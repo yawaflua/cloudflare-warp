@@ -3,7 +3,7 @@ package core
 import (
 	"net/netip"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/model"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/model"
 )
 
 // Config holds the configuration for the WARP engine.

@@ -6,7 +6,7 @@ import (
 	"net/netip"
 	"testing"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/model"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/model"
 )
 
 func testIdentity() *model.Identity {
@@ -56,7 +56,7 @@ func TestNewProxyValidation(t *testing.T) {
 	}{
 		{name: "missing port", config: ProxyConfig{EndpointIP: netip.MustParseAddr("162.159.192.1")}},
 		{name: "missing endpoint", config: ProxyConfig{Port: 1080}},
-		{name: "invalid protocol", config: ProxyConfig{Port: 1080, EndpointIP: netip.MustParseAddr("162.159.192.1"), Protocol: Protocol(10)}},
+		{name: "invalid protocol", config: ProxyConfig{Port: 1080, EndpointIP: netip.MustParseAddr("162.159.192.1"), Protocol: Protocol("invalid")}},
 	}
 
 	for _, test := range tests {

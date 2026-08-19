@@ -19,7 +19,7 @@ RUN --mount=type=cache,target="/gocache" apk add --update --no-cache make git \
     && make cloudflare-warp
 
 FROM alpine
-LABEL org.opencontainers.image.source="https://github.com/shahradelahi/cloudflare-warp"
+LABEL org.opencontainers.image.source="https://github.com/yawaflua/cloudflare-warp"
 
 # Create and set permissions for the data directory
 RUN mkdir -p /var/lib/cloudflare-warp

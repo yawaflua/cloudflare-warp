@@ -8,9 +8,9 @@ import (
 	"os"
 	"sync"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare"
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/model"
-	"github.com/shahradelahi/cloudflare-warp/core/datadir"
+	"github.com/yawaflua/cloudflare-warp/cloudflare"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/model"
+	"github.com/yawaflua/cloudflare-warp/core/datadir"
 )
 
 // ClientConfig controls WARP identity loading.

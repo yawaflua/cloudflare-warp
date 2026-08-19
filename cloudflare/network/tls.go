@@ -12,8 +12,8 @@ import (
 	tls "github.com/refraction-networking/utls"
 	"go.uber.org/zap"
 
-	"github.com/shahradelahi/cloudflare-warp/log"
-	"github.com/shahradelahi/cloudflare-warp/utils"
+	"github.com/yawaflua/cloudflare-warp/log"
+	"github.com/yawaflua/cloudflare-warp/utils"
 )
 
 // Dialer is a struct that holds various options for custom dialing.

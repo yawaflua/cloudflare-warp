@@ -1,4 +1,4 @@
-module github.com/shahradelahi/cloudflare-warp
+module github.com/yawaflua/cloudflare-warp
 
 go 1.26.6
 

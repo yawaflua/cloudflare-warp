@@ -1,5 +1,5 @@
 BINARY := warp
-MODULE := github.com/shahradelahi/cloudflare-warp
+MODULE := github.com/yawaflua/cloudflare-warp
 
 BUILD_DIR     := build
 BUILD_TAGS    :=

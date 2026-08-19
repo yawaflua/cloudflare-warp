@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/model"
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/network"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/model"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/network"
 )
 
 const (

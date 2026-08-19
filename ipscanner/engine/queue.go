@@ -7,8 +7,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/shahradelahi/cloudflare-warp/ipscanner/model"
-	"github.com/shahradelahi/cloudflare-warp/log"
+	"github.com/yawaflua/cloudflare-warp/ipscanner/model"
+	"github.com/yawaflua/cloudflare-warp/log"
 )
 
 type IPQueue struct {

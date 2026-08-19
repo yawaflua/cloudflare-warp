@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare"
-	"github.com/shahradelahi/cloudflare-warp/core"
-	"github.com/shahradelahi/cloudflare-warp/log"
+	"github.com/yawaflua/cloudflare-warp/cloudflare"
+	"github.com/yawaflua/cloudflare-warp/core"
+	"github.com/yawaflua/cloudflare-warp/log"
 )
 
 var GenerateCmd = &cobra.Command{

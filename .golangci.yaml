@@ -37,4 +37,4 @@ formatters:
       sections:
         - standard
         - default
-        - prefix(github.com/shahradelahi/cloudflare-warp)
+        - prefix(github.com/yawaflua/cloudflare-warp)

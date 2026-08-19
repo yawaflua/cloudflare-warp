@@ -7,9 +7,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/crypto"
-	"github.com/shahradelahi/cloudflare-warp/cloudflare/model"
-	"github.com/shahradelahi/cloudflare-warp/log"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/crypto"
+	"github.com/yawaflua/cloudflare-warp/cloudflare/model"
+	"github.com/yawaflua/cloudflare-warp/log"
 )
 
 func CreateOrUpdateIdentity(license string) (*model.Identity, error) {

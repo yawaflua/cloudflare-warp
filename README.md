@@ -1,16 +1,16 @@
 # ☁️ Cloudflare Warp
 
-[![GitHub Workflow][1]](https://github.com/shahradelahi/cloudflare-warp/actions)
+[![GitHub Workflow][1]](https://github.com/yawaflua/cloudflare-warp/actions)
 [![Go Version][2]](https://img.shields.io/github/go-mod/go-version/shahradelahi/cloudflare-warp?logo=go)
-[![Go Report Card][3]](https://goreportcard.com/report/github.com/shahradelahi/cloudflare-warp)
+[![Go Report Card][3]](https://goreportcard.com/report/github.com/yawaflua/cloudflare-warp)
 [![Maintainability][4]](https://api.codeclimate.com/v1/badges/b5b30239174fc6603aca/maintainability)
 [![GitHub License][5]](https://img.shields.io/github/license/shahradelahi/cloudflare-warp)
 [![Docker Pulls][6]](https://hub.docker.com/r/shahradelahi/cloudflare-warp)
-[![Releases][7]](https://github.com/shahradelahi/cloudflare-warp/releases)
+[![Releases][7]](https://github.com/yawaflua/cloudflare-warp/releases)
 
 [1]: https://img.shields.io/github/actions/workflow/status/shahradelahi/cloudflare-warp/docker.yml?logo=github
 [2]: https://img.shields.io/github/go-mod/go-version/shahradelahi/cloudflare-warp?logo=go
-[3]: https://goreportcard.com/badge/github.com/shahradelahi/cloudflare-warp
+[3]: https://goreportcard.com/badge/github.com/yawaflua/cloudflare-warp
 [4]: https://qlty.sh/gh/shahradelahi/projects/cloudflare-warp/maintainability.svg
 [5]: https://img.shields.io/github/license/shahradelahi/cloudflare-warp
 [6]: https://img.shields.io/docker/pulls/shahradelahi/cloudflare-warp?logo=docker
@@ -59,7 +59,7 @@ There are multiple ways to install `cloudflare-warp`.
 
 ### From GitHub Releases
 
-You can download pre-compiled binaries for various operating systems and architectures from the [releases page](https://github.com/shahradelahi/cloudflare-warp/releases).
+You can download pre-compiled binaries for various operating systems and architectures from the [releases page](https://github.com/yawaflua/cloudflare-warp/releases).
 
 ### Building from Source
 
@@ -70,7 +70,7 @@ Since the tool is written in Go, it should be rather trivial.
 2. Clone this repository and switch to the project's root directory:
 
    ```bash
-   git clone https://github.com/shahradelahi/cloudflare-warp.git
+   git clone https://github.com/yawaflua/cloudflare-warp.git
    cd cloudflare-warp
    ```
 
@@ -238,7 +238,7 @@ import (
 	"net/netip"
 	"time"
 
-	warpsdk "github.com/shahradelahi/cloudflare-warp/sdk"
+	warpsdk "github.com/yawaflua/cloudflare-warp/sdk"
 )
 
 func main() {
@@ -301,7 +301,7 @@ appropriate network access controls.
 
 ## 💬 Community
 
-Welcome and feel free to ask any questions at [Discussions](https://github.com/shahradelahi/cloudflare-warp/discussions).
+Welcome and feel free to ask any questions at [Discussions](https://github.com/yawaflua/cloudflare-warp/discussions).
 
 ## 🙏 Credits
 
@@ -310,6 +310,7 @@ Welcome and feel free to ask any questions at [Discussions](https://github.com/s
 - [amneziawg-go](https://github.com/amnezia-vpn/amneziawg-go) - Go Implementation of Amnezia WireGuard.
 - [utls](https://github.com/refraction-networking/utls) - A Go library for custom TLS client hellos, used for DPI evasion.
 - [cobra](https://github.com/spf13/cobra) - Powerful CLI library for Go.
+- [@shahradelahi](https://github.com/shahradelahi) - Author and maintainer of old version of this project.
 - And many other open-source projects and contributors that make this possible.
 
 ## ⚠️ Notice of Non-Affiliation and Disclaimer
@@ -322,7 +323,12 @@ This tool is an independent open-source project and is provided "as is" without 
 
 ## License
 
-[MIT](/LICENSE) © [Shahrad Elahi](https://github.com/shahradelahi) and [contributors](https://github.com/shahradelahi/aes-object/graphs/contributors).
+The codebase up to and including commit [`475e16a`](https://github.com/yawaflua/cloudflare-warp/commit/475e16a41395dcdce88dd04f5f7d8a4885577fbe) is licensed under the [MIT License](LICENSE.old) and is copyright © [Shahrad Elahi](https://github.com/shahradelahi) and the [original contributors](https://github.com/shahradelahi/aes-object/graphs/contributors).
+
+All subsequent modifications are licensed under the [GNU General Public License v3.0](LICENSE) and are copyright © [@yawaflua](https://github.com/yawaflua) and the [cloudflare-warp contributors](https://github.com/yawaflua/cloudflare-warp/graphs/contributors).
+
+Read more at [NOTICE](NOTICE)
+
 
 ## ⭐ Star History
 

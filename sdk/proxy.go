@@ -1,13 +1,18 @@
 package sdk
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"net/netip"
+	"net/url"
+	"strings"
 	"sync"
 
-	"github.com/shahradelahi/cloudflare-warp/core"
+	"github.com/yawaflua/cloudflare-warp/core"
 )
 
 const (
@@ -23,13 +28,13 @@ var (
 )
 
 // Protocol selects the local proxy protocol.
-type Protocol uint8
+type Protocol string
 
 const (
 	// SOCKS5 serves a SOCKS5 proxy. It is the default protocol.
-	SOCKS5 Protocol = iota
+	SOCKS5 Protocol = "socks5"
 	// HTTP serves an HTTP CONNECT proxy.
-	HTTP
+	HTTP Protocol = "http"
 )
 
 // ProxyConfig describes one independent proxy and its WARP endpoint.
@@ -49,12 +54,31 @@ type ProxyConfig struct {
 	Protocol Protocol
 }
 
+type WARPInfo struct {
+	IP          netip.Addr
+	HTTP        string
+	ServerPlace string
+	Location    string
+	Warp        WarpType
+	TLS         string
+}
+
+type WarpType string
+
+const (
+	WarpTypeOn   WarpType = "on"
+	WarpTypeOff  WarpType = "off"
+	WarpTypePlus WarpType = "plus"
+)
+
 // Proxy is one WARP tunnel with one local proxy listener.
 type Proxy struct {
-	engine   *core.Engine
-	cancel   context.CancelFunc
-	bindAddr netip.AddrPort
-	endpoint netip.AddrPort
+	engine       *core.Engine
+	cancel       context.CancelFunc
+	bindAddr     netip.AddrPort
+	endpoint     netip.AddrPort
+	proxyConfig  ProxyConfig
+	engineConfig core.Config
 
 	mu       sync.RWMutex
 	started  bool
@@ -79,7 +103,7 @@ func (c *Client) NewProxy(ctx context.Context, config ProxyConfig) (*Proxy, erro
 		return nil, errors.New("WARP endpoint IP is required")
 	}
 	if config.Protocol != SOCKS5 && config.Protocol != HTTP {
-		return nil, fmt.Errorf("unsupported proxy protocol: %d", config.Protocol)
+		return nil, fmt.Errorf("unsupported proxy protocol: %s", config.Protocol)
 	}
 
 	if !config.ListenIP.IsValid() {
@@ -108,11 +132,13 @@ func (c *Client) NewProxy(ctx context.Context, config ProxyConfig) (*Proxy, erro
 
 	proxyCtx, cancel := context.WithCancel(ctx)
 	return &Proxy{
-		engine:   core.NewEngine(proxyCtx, engineConfig),
-		cancel:   cancel,
-		bindAddr: bindAddr,
-		endpoint: endpoint,
-		done:     make(chan struct{}),
+		engine:       core.NewEngine(proxyCtx, engineConfig),
+		cancel:       cancel,
+		bindAddr:     bindAddr,
+		endpoint:     endpoint,
+		done:         make(chan struct{}),
+		proxyConfig:  config,
+		engineConfig: engineConfig,
 	}, nil
 }
 
@@ -247,4 +273,121 @@ func (p *Proxy) Addr() netip.AddrPort {
 // Endpoint returns the remote WARP endpoint used by this proxy.
 func (p *Proxy) Endpoint() netip.AddrPort {
 	return p.endpoint
+}
+
+func (p *Proxy) ProxyConfig() ProxyConfig {
+	return p.proxyConfig
+}
+
+func (p *Proxy) UpdateProxyConfigAndRestart(ctx context.Context, newConfig ProxyConfig) (*Proxy, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.stopped {
+		return nil, nil
+	}
+
+	if p == nil || p.engineConfig.Identity == nil {
+		return nil, errors.New("WARP client is not initialized")
+	}
+	if ctx == nil {
+		return nil, errors.New("context is nil")
+	}
+	if newConfig.Port == 0 {
+		return nil, errors.New("proxy port must be non-zero")
+	}
+	if !newConfig.EndpointIP.IsValid() {
+		return nil, errors.New("WARP endpoint IP is required")
+	}
+	if newConfig.Protocol != SOCKS5 && newConfig.Protocol != HTTP {
+		return nil, fmt.Errorf("unsupported proxy protocol: %s", newConfig.Protocol)
+	}
+
+	if !newConfig.ListenIP.IsValid() {
+		newConfig.ListenIP = netip.MustParseAddr("127.0.0.1")
+	}
+	if newConfig.EndpointPort == 0 {
+		newConfig.EndpointPort = DefaultEndpointPort
+	}
+	if !newConfig.DNS.IsValid() {
+		newConfig.DNS = netip.MustParseAddr("1.1.1.1")
+	}
+
+	p.proxyConfig = newConfig
+	endpoint := netip.AddrPortFrom(newConfig.EndpointIP, newConfig.EndpointPort)
+	p.engineConfig = core.Config{
+		Endpoints:            []string{endpoint.String()},
+		DnsAddr:              newConfig.DNS,
+		UserProvidedEndpoint: true,
+		Identity:             p.engineConfig.Identity,
+	}
+	p.engine = core.NewEngine(ctx, p.engineConfig)
+	p.started = false
+	p.Stop()
+	p.Run()
+	return p, nil
+}
+
+func (p *Proxy) GetWARPInfo() (*WARPInfo, error) {
+	client, err := proxyHTTPClient(fmt.Sprintf("%s://%s", p.proxyConfig.Protocol, p.bindAddr.String()))
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Get("https://cloudflare.com/cdn-cgi/trace")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	warptrace := WARPInfo{}
+	scanner := bufio.NewScanner(strings.NewReader(string(body)))
+	for scanner.Scan() {
+		key, value, ok := strings.Cut(scanner.Text(), "=")
+		if !ok {
+			continue
+		}
+		switch key {
+		case "ip":
+			warptrace.IP = netip.MustParseAddr(value)
+		case "colo":
+			warptrace.ServerPlace = value
+
+		case "loc":
+			warptrace.Location = value
+		case "tls":
+			warptrace.TLS = value
+		case "warp":
+			warptrace.Warp = WarpType(value)
+		}
+	}
+	return &warptrace, nil
+}
+
+func proxyHTTPClient(proxyURL string) (*http.Client, error) {
+	parsed, err := url.Parse(strings.TrimSpace(proxyURL))
+	if err != nil || parsed.Host == "" {
+		return nil, fmt.Errorf("invalid proxy URL %q", proxyURL)
+	}
+
+	transport, ok := http.DefaultTransport.(*http.Transport)
+	if !ok {
+		return nil, fmt.Errorf("unsupported default HTTP transport")
+	}
+	transport = transport.Clone()
+
+	switch strings.ToLower(parsed.Scheme) {
+	case "http", "https":
+		transport.Proxy = http.ProxyURL(parsed)
+	case "socks", "socks5", "socks5h":
+		if strings.EqualFold(parsed.Scheme, "socks") {
+			parsed.Scheme = "socks5"
+		}
+		transport.Proxy = http.ProxyURL(parsed)
+	default:
+		return nil, fmt.Errorf("unsupported proxy scheme %q", parsed.Scheme)
+	}
+
+	return &http.Client{Transport: transport}, nil
 }
