@@ -279,12 +279,10 @@ func (p *Proxy) ProxyConfig() ProxyConfig {
 	return p.proxyConfig
 }
 
-func (p *Proxy) UpdateProxyConfigAndRestart(ctx context.Context, newConfig ProxyConfig) (*Proxy, error) {
+// Stopping the proxy is gonna cancel the context. If you want to restart the proxy, call Start() again from normal-lifecycle context.
+func (p *Proxy) UpdateProxyConfig(ctx context.Context, newConfig ProxyConfig) (*Proxy, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	if p.stopped {
-		return nil, nil
-	}
 
 	if p == nil || p.engineConfig.Identity == nil {
 		return nil, errors.New("WARP client is not initialized")
@@ -313,17 +311,20 @@ func (p *Proxy) UpdateProxyConfigAndRestart(ctx context.Context, newConfig Proxy
 	}
 
 	p.proxyConfig = newConfig
+	bindAddr := netip.AddrPortFrom(newConfig.ListenIP, newConfig.Port)
 	endpoint := netip.AddrPortFrom(newConfig.EndpointIP, newConfig.EndpointPort)
-	p.engineConfig = core.Config{
+	engineConfig := core.Config{
 		Endpoints:            []string{endpoint.String()},
 		DnsAddr:              newConfig.DNS,
 		UserProvidedEndpoint: true,
 		Identity:             p.engineConfig.Identity,
 	}
-	p.engine = core.NewEngine(ctx, p.engineConfig)
-	p.started = false
-	p.Stop()
-	p.Start()
+	if newConfig.Protocol == SOCKS5 {
+		engineConfig.SocksBindAddress = &bindAddr
+	} else {
+		engineConfig.HttpBindAddress = &bindAddr
+	}
+	p.engine.UpdateConfig(engineConfig)
 	return p, nil
 }
 
@@ -353,7 +354,8 @@ func (p *Proxy) GetWARPInfo() (*WARPInfo, error) {
 			warptrace.IP = netip.MustParseAddr(value)
 		case "colo":
 			warptrace.ServerPlace = value
-
+		case "http":
+			warptrace.HTTP = value
 		case "loc":
 			warptrace.Location = value
 		case "tls":

@@ -32,6 +32,11 @@ func NewEngine(ctx context.Context, opts Config) *Engine {
 	}
 }
 
+// Just updates the engine's configuration. Requires to restart the engine if the configuration changes.
+func (e *Engine) UpdateConfig(opts Config) {
+	e.opts = opts
+}
+
 // Run runs the WARP engine.
 func (e *Engine) Run() error {
 	var endpoints []string
